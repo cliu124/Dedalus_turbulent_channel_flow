@@ -81,19 +81,19 @@ problem.parameters['La'] = flag.La
 problem.add_equation("dt(u)+dx(p)-La*(dx(dx(u))+dy(dy(u)))=-v*dy(u)-w*uz")
 problem.add_equation("dt(v)+dy(p)-La*(dx(dx(v))+dy(dy(v)))-z*dy(u)+z*dx(v)=-v*dy(v)-w*vz")
 problem.add_equation("dt(w)+dz(p)-La*(dx(dx(w))+dy(dy(w)))-z*uz+z*dx(w)=-v*dy(w)-w*wz")
+problem.add_equation("dy(v) + wz = 0")
 
 problem.add_equation("uz - dz(u) = 0")
 problem.add_equation("vz - dz(v) = 0")
 problem.add_equation("wz - dz(w) = 0")
-problem.add_equation("dy(v) + wz = 0", condition="(ny != 0)")
-problem.add_equation("integ(p) = 0", condition="(ny == 0)")
 
-problem.add_bc("uz(z='left')=1")
-problem.add_bc("uz(z='right')=1")
+problem.add_bc("uz(z='left')-1=0")
+problem.add_bc("uz(z='right')-1=0")
 problem.add_bc("vz(z='left')=0")
 problem.add_bc("vz(z='right')=0")
 problem.add_bc("w(z='left') = 0")
-problem.add_bc("w(z='right') = 0")
+problem.add_bc("w(z='right') = 0",condition="(ny != 0)")
+problem.add_bc("integ(p) = 0", condition="(ny == 0)")
 
 # Build solver
 solver = problem.build_solver(de.timesteppers.RK222)
