@@ -100,7 +100,7 @@ problem.add_bc("vz(z='left')=0")
 problem.add_bc("vz(z='right')=0")
 
 problem.add_bc("w(z='left') = 0")
-problem.add_bc("w(z='right') = 0")
+#problem.add_bc("w(z='right') = 0")
 
 #problem.add_bc("pz(z='left')=0")
 #problem.add_bc("pz(z='right')=0")
