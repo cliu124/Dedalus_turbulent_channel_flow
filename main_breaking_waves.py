@@ -65,6 +65,7 @@ grad_u = d3.grad(u) - ez*lift(tau_u1) # Operator representing G
 # Problem
 problem = d3.IVP([p, u, tau_p, tau_u1, tau_u2], namespace=globals() | locals())
 problem.namespace.update({'t':problem.time})
+problem.namespace.update({problem.time: problem.sim_time_field})
 problem.add_equation("trace(grad_u) + tau_p = 0")
 problem.add_equation("dt(u) - 1/Re*div(grad_u) + grad(p) + lift(tau_u2) = -dot(u,grad(u))+A0(t)*ex")
 problem.add_equation("u(z=0) = 0") # change from -1 to -0.5
