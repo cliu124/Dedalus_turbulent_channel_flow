@@ -126,6 +126,7 @@ try:
         solver.step(timestep)
         t=solver.sim_time
         A0.require_grid_space()   # Switch back to grid space
+        A0.set_scales(1)
         A0['g'] = k_b*c*T_alpha(t)*X_beta(t)*Y_delta*Z_gamma(t)/T
 
         if (solver.iteration-1) % 10 == 0:
