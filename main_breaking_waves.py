@@ -96,7 +96,7 @@ solver.stop_sim_time = stop_sim_time
 snapshots = solver.evaluator.add_file_handler('snapshots_breaking_waves', sim_dt=10, max_writes=600)
 snapshots.add_task(u, name='velocity')
 snapshots.add_task(d3.curl(u), name='vorticity')
-#snapshots.add_task(A0(t), name'A0')
+#snapshots.add_task(A0, name'A0')
 
 
 #snapshots_stress = solver.evaluator.add_file_handler('snapshots_channel_stress', sim_dt=1, max_writes=400)
