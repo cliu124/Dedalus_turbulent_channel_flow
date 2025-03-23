@@ -70,7 +70,7 @@ domain = de.Domain([x_basis, y_basis, z_basis], grid_dtype=np.float64)
 x, y, z = domain.all_grids()
 
 # 2D Boussinesq hydrodynamics
-problem = de.IVP(domain, variables=['p','pz','u','v','w','uz','vz','wz'])
+problem = de.IVP(domain, variables=['p','u','v','w','uz','vz','wz'])
 problem.parameters['La'] = flag.La
  
 #For Couette profile of Stokes drift following 
@@ -82,16 +82,16 @@ problem.parameters['La'] = flag.La
 problem.add_equation("dt(u)+dx(p)-La*(dz(uz)+dy(dy(u)))=-v*dy(u)-w*uz")
 problem.add_equation("dt(v)+dy(p)-La*(dz(vz)+dy(dy(v)))-z*dy(u)+z*dx(v)=-v*dy(v)-w*vz")
 problem.add_equation("dt(w)+dz(p)-La*(dz(wz)+dy(dy(w)))-z*uz+z*dx(w)=-v*dy(w)-w*wz")
-#problem.add_equation("dy(v) + wz = 0")
+problem.add_equation("dy(v) + wz = 0")
 
 #pressure poisson equation
 #\nabla_\perp^2 p=-(\partial_y v\partial_y v + 2*\partial_y w \parital_z v+\partial_z w \partial_z w)+U_s \partial_y^2 \bar{u}_0+U_s'\partial_z \bar{u}+U_s\partial_z^2 \bar{u}_0-U_s'\partial_x w
-problem.add_equation("dz(pz)+dy(dy(p))-z*dy(dy(u))-1*uz-z*dz(uz)+1*dx(w) = dy(v)*dy(v)+2*dy(w)*vz+wz*wz")
+#problem.add_equation("dz(pz)+dy(dy(p))-z*dy(dy(u))-1*uz-z*dz(uz)+1*dx(w) = dy(v)*dy(v)+2*dy(w)*vz+wz*wz")
 
 problem.add_equation("uz - dz(u) = 0")
 problem.add_equation("vz - dz(v) = 0")
 problem.add_equation("wz - dz(w) = 0")
-problem.add_equation("pz - dz(p)=0")
+#problem.add_equation("pz - dz(p)=0")
 
 problem.add_bc("uz(z='left')=1")
 problem.add_bc("uz(z='right')=1")
@@ -102,11 +102,12 @@ problem.add_bc("vz(z='right')=0")
 problem.add_bc("w(z='left') = 0")
 problem.add_bc("w(z='right') = 0")
 
-problem.add_bc("pz(z='left')=0")
-problem.add_bc("pz(z='right')=0")
+#problem.add_bc("pz(z='left')=0")
+#problem.add_bc("pz(z='right')=0")
 
-#problem.add_bc("w(z='right') = 0",condition="(ny != 0)")
-#problem.add_bc("integrate(integrate(p,y),z) = 0", condition="(ny == 0)")
+problem.add_bc("w(z='right') = 0",condition="(ny != 0)")
+problem.add_bc("dx(p) = 0", condition="(ny == 0) and (nx!=0)")
+problem.add_bc("p=0", condition="(ny==0) and (nx=0)")
 
 # Build solver
 solver = problem.build_solver(de.timesteppers.RK222)
