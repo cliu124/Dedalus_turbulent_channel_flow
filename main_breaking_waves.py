@@ -31,14 +31,14 @@ mu6=2
 
 t0=-0.0001
 x0=0
-
+y0=1
 #nx, ny, nz = 100, 100, 96 # larger box. Kim Moin and Moser 
 nx, ny, nz=32, 28, 30
 coords = d3.CartesianCoordinates('x', 'y','z')
 dist = d3.Distributor(coords, dtype=np.float64)
 xbasis = d3.RealFourier(coords['x'], size=nx, bounds=(0, Lx), dealias=3/2)
 ybasis = d3.RealFourier(coords['y'], size=ny, bounds=(0, Ly), dealias=3/2)
-zbasis = d3.Chebyshev(coords['z'], size=nz, bounds=(0, Lz), dealias=3/2)
+zbasis = d3.Chebyshev(coords['z'], size=nz, bounds=(0, Lz), dealias=1)
 
 # Fields
 p = dist.Field(name='p', bases=(xbasis,ybasis,zbasis))
@@ -53,6 +53,7 @@ tau_p = dist.Field(name='tau_p')
 #dPdx = -Retau**2/Re**2
 dPdx = -2/Re
 x, y, z = dist.local_grids(xbasis, ybasis, zbasis)
+#x, y, z = dist.dealiased_grid(xbasis, ybasis, zbasis)
 ex, ey, ez = coords.unit_vector_fields(dist)
 lift_basis = zbasis.derivative_basis(1) # Chebyshev U basis
 lift = lambda A: d3.Lift(A, lift_basis, -1) # Shortcut for multiplying by U_{N-1}(y)
@@ -112,10 +113,11 @@ try:
         t=solver.sim_time
         alpha=(t-t0)/T
         beta=(x-x0)/c/(t-t0)
+        delta=2*(y-y0)/wavelength
         gamma=z/chi/c/(t-t0)  
         T_alpha=mu1*alpha**2*(np.exp(mu3*(1-alpha)**2)-1)
         X_beta=mu2*beta**2*(1-beta)**2*(1+mu4*beta**3)
-        Y_delta=1
+        Y_delta=(1-delta**2)**2*(1+mu5*delta**2)
         Z_gamma=(1-gamma**2)**2*(1+mu6*gamma**2)
         A0['g']=k_b*c/T*T_alpha*X_beta*Y_delta*Z_gamma
         
