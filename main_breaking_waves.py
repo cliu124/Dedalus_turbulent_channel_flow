@@ -65,15 +65,8 @@ grad_u = d3.grad(u) - ez*lift(tau_u1) # Operator representing G
 # Problem
 problem = d3.IVP([p, u, tau_p, tau_u1, tau_u2], namespace=globals() | locals())
 problem.namespace.update({'t':problem.time})
-problem.namespace.update({problem.time: problem.sim_time_field})
-problem.add_equation("trace(grad_u) + tau_p = 0")
-problem.add_equation("dt(u) - 1/Re*div(grad_u) + grad(p) + lift(tau_u2) = -dot(u,grad(u))+A0(t)*ex")
-problem.add_equation("u(z=0) = 0") # change from -1 to -0.5
-problem.add_equation("u(z=Lz) = 0") #change from 1 to 0.5
-problem.add_equation("integ(p) = 0")
+#problem.namespace.update({problem.time: problem.sim_time_field})
 
-#get the time variable. 
-#t=solver.sim_time
 alpha = lambda t: (t-t0)/T
 beta = lambda t: (x-x0)/c/(t-t0)
 delta=2*(y-y0)/wavelength
@@ -83,6 +76,15 @@ X_beta= lambda t: mu2*beta(t)**2*(1-beta(t))**2*(1+mu4*beta(t)**3)
 Y_delta=(1-delta**2)**2*(1+mu5*delta**2)
 Z_gamma= lambda t: (1-gamma(t)**2)**2*(1+mu6*gamma(t)**2)
 A0 = lambda t: k_b*c/T*T_alpha(t)*X_beta(t)*Y_delta*Z_gamma(t)
+
+problem.add_equation("trace(grad_u) + tau_p = 0")
+problem.add_equation("dt(u) - 1/Re*div(grad_u) + grad(p) + lift(tau_u2) = -dot(u,grad(u))+A0(t)*ex")
+problem.add_equation("u(z=0) = 0") # change from -1 to -0.5
+problem.add_equation("u(z=Lz) = 0") #change from 1 to 0.5
+problem.add_equation("integ(p) = 0")
+
+#get the time variable. 
+#t=solver.sim_time
 
 
 # Build Solver
@@ -95,7 +97,7 @@ solver.stop_sim_time = stop_sim_time
 snapshots = solver.evaluator.add_file_handler('snapshots_breaking_waves', sim_dt=10, max_writes=600)
 snapshots.add_task(u, name='velocity')
 snapshots.add_task(d3.curl(u), name='vorticity')
-
+#snapshots.add_task(A0(t), name'A0')
 
 
 #snapshots_stress = solver.evaluator.add_file_handler('snapshots_channel_stress', sim_dt=1, max_writes=400)
