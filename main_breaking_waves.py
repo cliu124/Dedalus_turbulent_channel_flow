@@ -68,14 +68,14 @@ problem.namespace.update({'t':problem.time})
 #problem.namespace.update({problem.time: problem.sim_time_field})
 
 alpha = lambda t: (t-t0)/T
-beta = lambda t: (x-x0)/c/(t-t0)
+beta = lambda t: (x-x0)/(c*(t-t0))
 delta=2*(y-y0)/wavelength
-gamma= lambda t: z/chi/c/(t-t0)  
+gamma= lambda t: z/(chi*c*(t-t0))  
 T_alpha= lambda t: mu1*alpha(t)**2*(np.exp(mu3*(1-alpha(t))**2)-1)
 X_beta= lambda t: mu2*beta(t)**2*(1-beta(t))**2*(1+mu4*beta(t)**3)
 Y_delta=(1-delta**2)**2*(1+mu5*delta**2)
 Z_gamma= lambda t: (1-gamma(t)**2)**2*(1+mu6*gamma(t)**2)
-A0 = lambda t: k_b*c/T*T_alpha(t)*X_beta(t)*Y_delta*Z_gamma(t)
+A0 = lambda t: k_b*c*T_alpha(t)*X_beta(t)*Y_delta*Z_gamma(t)/T
 
 problem.add_equation("trace(grad_u) + tau_p = 0")
 problem.add_equation("dt(u) - 1/Re*div(grad_u) + grad(p) + lift(tau_u2) = -dot(u,grad(u))+A0(t)*ex")
