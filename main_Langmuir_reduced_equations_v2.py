@@ -78,9 +78,9 @@ problem.parameters['La'] = flag.La
 
 #We set up the domain size based on the following reference trying to reproduce their results. 
 #Zhang Z, Chini GP, Julien K, Knobloch E. Dynamic patterns in the reduced Craik–Leibovich equations. Physics of Fluids. 2015 Apr 1;27(4).
-problem.add_equation("dt(u)+dx(p)-La*(dx(dx(u))+dy(dy(u)))=-v*dy(u)-w*uz")
-problem.add_equation("dt(v)+dy(p)-La*(dx(dx(v))+dy(dy(v)))-z*dy(u)+z*dx(v)=-v*dy(v)-w*vz")
-problem.add_equation("dt(w)+dz(p)-La*(dx(dx(w))+dy(dy(w)))-z*uz+z*dx(w)=-v*dy(w)-w*wz")
+problem.add_equation("dt(u)+dx(p)-La*(dz(uz)+dy(dy(u)))=-v*dy(u)-w*uz")
+problem.add_equation("dt(v)+dy(p)-La*(dz(vz)+dy(dy(v)))-z*dy(u)+z*dx(v)=-v*dy(v)-w*vz")
+problem.add_equation("dt(w)+dz(p)-La*(dz(wz)+dy(dy(w)))-z*uz+z*dx(w)=-v*dy(w)-w*wz")
 problem.add_equation("dy(v) + wz = 0")
 
 problem.add_equation("uz - dz(u) = 0")
@@ -94,8 +94,8 @@ problem.add_bc("uz(z='right')=1")
 #problem.add_bc("vz(z='right')=0")
 
 problem.add_bc("w(z='left') = 0")
-problem.add_bc("w(z='right') = 0",condition="(ny != 0) or (nx!=0)")
-problem.add_bc("integ(p) = 0", condition="(ny == 0) and (nx==0)")
+problem.add_bc("w(z='right') = 0",condition="(ny != 0)")
+problem.add_bc("integ(p) = 0", condition="(ny == 0)")
 
 # Build solver
 solver = problem.build_solver(de.timesteppers.RK222)
