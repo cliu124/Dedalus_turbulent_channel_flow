@@ -63,15 +63,25 @@ grad_u = d3.grad(u) - ez*lift(tau_u1) # Operator representing G
 #xz_average = lambda A: d3.Average(d3.Average(A, 'x'), 'z')
 
 # Problem
-problem = d3.IVP([p, u, tau_p, tau_u1, tau_u2], namespace=locals())
+problem = d3.IVP([p, u, tau_p, tau_u1, tau_u2], namespace=globals() | locals())
+problem.namespace.update({'t':problem.time})
 problem.add_equation("trace(grad_u) + tau_p = 0")
-problem.add_equation("dt(u) - 1/Re*div(grad_u) + grad(p) + lift(tau_u2) = -dot(u,grad(u))+A0*ex")
+problem.add_equation("dt(u) - 1/Re*div(grad_u) + grad(p) + lift(tau_u2) = -dot(u,grad(u))+A0(t)*ex")
 problem.add_equation("u(z=0) = 0") # change from -1 to -0.5
 problem.add_equation("u(z=Lz) = 0") #change from 1 to 0.5
 problem.add_equation("integ(p) = 0")
 
 #get the time variable. 
-#problem.namespace.update({'t':problem.time})
+#t=solver.sim_time
+alpha = lambda t: (t-t0)/T
+beta = lambda t: (x-x0)/c/(t-t0)
+delta=2*(y-y0)/wavelength
+gamma= lambda t: z/chi/c/(t-t0)  
+T_alpha= lambda t: mu1*alpha(t)**2*(np.exp(mu3*(1-alpha(t))**2)-1)
+X_beta= lambda t: mu2*beta(t)**2*(1-beta(t))**2*(1+mu4*beta(t)**3)
+Y_delta=(1-delta**2)**2*(1+mu5*delta**2)
+Z_gamma= lambda t: (1-gamma(t)**2)**2*(1+mu6*gamma(t)**2)
+A0 = lambda t: k_b*c/T*T_alpha(t)*X_beta(t)*Y_delta*Z_gamma(t)
 
 
 # Build Solver
@@ -84,6 +94,8 @@ solver.stop_sim_time = stop_sim_time
 snapshots = solver.evaluator.add_file_handler('snapshots_breaking_waves', sim_dt=10, max_writes=600)
 snapshots.add_task(u, name='velocity')
 snapshots.add_task(d3.curl(u), name='vorticity')
+
+
 
 #snapshots_stress = solver.evaluator.add_file_handler('snapshots_channel_stress', sim_dt=1, max_writes=400)
 #snapshots_stress.add_task(xz_average(u),name = 'ubar')
@@ -110,16 +122,6 @@ try:
     while solver.proceed:
         timestep = CFL.compute_timestep()
         solver.step(timestep)
-        t=solver.sim_time
-        alpha=(t-t0)/T
-        beta=(x-x0)/c/(t-t0)
-        delta=2*(y-y0)/wavelength
-        gamma=z/chi/c/(t-t0)  
-        T_alpha=mu1*alpha**2*(np.exp(mu3*(1-alpha)**2)-1)
-        X_beta=mu2*beta**2*(1-beta)**2*(1+mu4*beta**3)
-        Y_delta=(1-delta**2)**2*(1+mu5*delta**2)
-        Z_gamma=(1-gamma**2)**2*(1+mu6*gamma**2)
-        A0['g']=k_b*c/T*T_alpha*X_beta*Y_delta*Z_gamma
         
         if (solver.iteration-1) % 10 == 0:
             max_TKE = flow.max('TKE')
