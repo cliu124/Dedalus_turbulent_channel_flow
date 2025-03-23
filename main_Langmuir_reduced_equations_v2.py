@@ -67,6 +67,7 @@ x_basis = de.Fourier('x', flag.Nx, interval=(0, flag.Lx), dealias=3/2)
 y_basis = de.Fourier('y',flag.Ny, interval=(0,flag.Ly), dealias=3/2)
 z_basis = de.Chebyshev('z', flag.Nz, interval=(0, flag.Lz), dealias=3/2)
 domain = de.Domain([x_basis, y_basis, z_basis], grid_dtype=np.float64)
+x, y, z = domain.all_grids()
 
 # 2D Boussinesq hydrodynamics
 problem = de.IVP(domain, variables=['p','u','v','w','uz','vz','wz'])
@@ -90,12 +91,12 @@ problem.add_equation("wz - dz(w) = 0")
 problem.add_bc("uz(z='left')=1")
 problem.add_bc("uz(z='right')=1")
 
-#problem.add_bc("vz(z='left')=0")
-#problem.add_bc("vz(z='right')=0")
+problem.add_bc("vz(z='left')=0")
+problem.add_bc("vz(z='right')=0")
 
 problem.add_bc("w(z='left') = 0")
 problem.add_bc("w(z='right') = 0",condition="(ny != 0)")
-problem.add_bc("integ(p) = 0", condition="(ny == 0)")
+problem.add_bc("integrate(integrate(p,y),z) = 0", condition="(ny == 0)")
 
 # Build solver
 solver = problem.build_solver(de.timesteppers.RK222)
@@ -105,7 +106,7 @@ if not pathlib.Path('restart.h5').exists():
 
     print('Set up initial condition!')
     # Initial conditions
-    x, y, z = domain.all_grids()
+    #x, y, z = domain.all_grids()
     
     # Random perturbations, initialized globally for same results in parallel
     gshape = domain.dist.grid_layout.global_shape(scales=1)
