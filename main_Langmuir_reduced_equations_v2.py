@@ -46,7 +46,7 @@ class flag:
 flag=flag()
 
 # Parameters
-flag.La=1
+flag.La=0.02
 
 flag.Lx, flag.Ly, flag.Lz = (4*np.pi, np.pi, 1.) #domain size
 flag.Nx=128 #grid point number in x
