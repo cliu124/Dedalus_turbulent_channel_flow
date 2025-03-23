@@ -63,7 +63,7 @@ grad_u = d3.grad(u) - ez*lift(tau_u1) # Operator representing G
 #xz_average = lambda A: d3.Average(d3.Average(A, 'x'), 'z')
 
 # Problem
-problem = d3.IVP([p, u, tau_p, tau_u1, tau_u2], namespace=globals() | locals())
+problem = d3.IVP([p, u, tau_p, tau_u1, tau_u2], namespace= locals())
 problem.namespace.update({'t':problem.time})
 #problem.namespace.update({problem.time: problem.sim_time_field})
 
