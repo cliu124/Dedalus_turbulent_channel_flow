@@ -63,7 +63,7 @@ grad_u = d3.grad(u) - ez*lift(tau_u1) # Operator representing G
 #xz_average = lambda A: d3.Average(d3.Average(A, 'x'), 'z')
 
 # Problem
-problem = d3.IVP([p, u, tau_p, tau_u1, tau_u2], namespace= locals())
+problem = d3.IVP([p, u, tau_p, tau_u1, tau_u2,A0], namespace= globals()| locals())
 problem.namespace.update({'t':problem.time})
 #problem.namespace.update({problem.time: problem.sim_time_field})
 
@@ -78,7 +78,7 @@ Z_gamma= lambda t: (1-gamma(t)**2)**2*(1+mu6*gamma(t)**2)
 A0 = lambda t: k_b*c*T_alpha(t)*X_beta(t)*Y_delta*Z_gamma(t)/T
 
 problem.add_equation("trace(grad_u) + tau_p = 0")
-problem.add_equation("dt(u) - 1/Re*div(grad_u) + grad(p) + lift(tau_u2) = -dot(u,grad(u))+A0(t)*ex")
+problem.add_equation("dt(u) - 1/Re*div(grad_u) + grad(p) + lift(tau_u2) = -dot(u,grad(u))+A0*ex")
 problem.add_equation("u(z=0) = 0") # change from -1 to -0.5
 problem.add_equation("u(z=Lz) = 0") #change from 1 to 0.5
 problem.add_equation("integ(p) = 0")
