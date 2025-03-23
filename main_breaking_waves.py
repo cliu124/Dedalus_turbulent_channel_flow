@@ -82,7 +82,7 @@ solver.stop_sim_time = stop_sim_time
 
 snapshots = solver.evaluator.add_file_handler('snapshots_breaking_waves', sim_dt=10, max_writes=600)
 snapshots.add_task(u, name='velocity')
-snapshots.add_task(-d3.div(d3.skew(u)), name='vorticity')
+snapshots.add_task(d3.curl(u), name='vorticity')
 
 #snapshots_stress = solver.evaluator.add_file_handler('snapshots_channel_stress', sim_dt=1, max_writes=400)
 #snapshots_stress.add_task(xz_average(u),name = 'ubar')
