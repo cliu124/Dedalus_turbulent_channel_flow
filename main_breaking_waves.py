@@ -87,7 +87,7 @@ problem.add_equation("integ(p) = 0")
 
 
 # Build Solver
-dt = 0.0094 # 0.001
+dt = 0.0001 # 0.001
 stop_sim_time = 600
 fh_mode = 'overwrite'
 solver = problem.build_solver(timestepper)
@@ -96,7 +96,7 @@ solver.stop_sim_time = stop_sim_time
 snapshots = solver.evaluator.add_file_handler('snapshots_breaking_waves', sim_dt=10, max_writes=600)
 snapshots.add_task(u, name='velocity')
 snapshots.add_task(d3.curl(u), name='vorticity')
-#snapshots.add_task(A0, name'A0')
+snapshots.add_task(A0, name='A0')
 
 
 #snapshots_stress = solver.evaluator.add_file_handler('snapshots_channel_stress', sim_dt=1, max_writes=400)
@@ -127,6 +127,13 @@ try:
         t=solver.sim_time
         #A0.require_grid_space()   # Switch back to grid space
         A0.preset_scales(1)
+        print('alpha=',alpha(t))
+        print('beta=',beta(t))
+        print('gamma=',gamma(t))
+        
+        print('T_alpha=',T_alpha(t))
+        print('X_beta',X_beta(t))
+        print('Z_gamma=',Z_gamma(t))
         A0['g'] = k_b*c*T_alpha(t)*X_beta(t)*Y_delta*Z_gamma(t)/T
 
         if (solver.iteration-1) % 10 == 0:
@@ -135,5 +142,5 @@ try:
 except:
     logger.error('Exception raised, triggering end of main loop.')
     raise
-finally:
-    solver.log_stats()
+#finally:
+    #solver.log_stats()
