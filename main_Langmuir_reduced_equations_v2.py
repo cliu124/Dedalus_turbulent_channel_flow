@@ -90,12 +90,12 @@ problem.add_equation("wz - dz(w) = 0")
 problem.add_bc("uz(z='left')=1")
 problem.add_bc("uz(z='right')=1")
 
-problem.add_bc("vz(z='left')=0")
-problem.add_bc("vz(z='right')=0")
+#problem.add_bc("vz(z='left')=0")
+#problem.add_bc("vz(z='right')=0")
 
 problem.add_bc("w(z='left') = 0")
-problem.add_bc("w(z='right') = 0",condition="(ny != 0) or (nx!=0)")
-problem.add_bc("integ(p) = 0", condition="(ny == 0) and (nx==0)")
+problem.add_bc("w(z='right') = 0",condition="(ny != 0)")
+problem.add_bc("integ(p) = 0", condition="(ny == 0)")
 
 # Build solver
 solver = problem.build_solver(de.timesteppers.RK222)
