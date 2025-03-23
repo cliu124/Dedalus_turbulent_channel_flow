@@ -107,7 +107,7 @@ problem.add_bc("w(z='right') = 0")
 
 problem.add_bc("w(z='right') = 0",condition="(ny != 0)")
 problem.add_bc("dx(p) = 0", condition="(ny == 0) and (nx!=0)")
-problem.add_bc("p=0", condition="(ny==0) and (nx=0)")
+problem.add_bc("p=0", condition="(ny==0) and (nx==0)")
 
 # Build solver
 solver = problem.build_solver(de.timesteppers.RK222)
