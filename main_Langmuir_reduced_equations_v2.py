@@ -211,6 +211,7 @@ try:
     end_wall_time = end_world_time - solver.start_time
     solver.evaluator.evaluate_handlers([checkpoint], timestep = flag.initial_dt, sim_time = solver.sim_time, world_time=end_world_time, wall_time=end_wall_time, iteration=solver.iteration)
     post.merge_process_files('checkpoint',cleanup=True)
+    post.merge_process_files('analysis',cleanup=True)
 
 except:
     logger.error('Exception raised, triggering end of main loop.')
