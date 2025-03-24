@@ -127,13 +127,13 @@ try:
         t=solver.sim_time
         #A0.require_grid_space()   # Switch back to grid space
         A0.preset_scales(1)
-        print('alpha=',alpha(t))
-        print('beta=',beta(t))
-        print('gamma=',gamma(t))
+        #print('alpha=',alpha(t))
+        #print('beta=',beta(t))
+        #print('gamma=',gamma(t))
         
-        print('T_alpha=',T_alpha(t))
-        print('X_beta',X_beta(t))
-        print('Z_gamma=',Z_gamma(t))
+        #print('T_alpha=',T_alpha(t))
+        #print('X_beta',X_beta(t))
+        #print('Z_gamma=',Z_gamma(t))
         A0['g'] = k_b*c*T_alpha(t)*X_beta(t)*Y_delta*Z_gamma(t)/T
 
         if (solver.iteration-1) % 10 == 0:
