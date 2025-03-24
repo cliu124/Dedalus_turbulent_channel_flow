@@ -38,7 +38,7 @@ coords = d3.CartesianCoordinates('x', 'y','z')
 dist = d3.Distributor(coords, dtype=np.float64)
 xbasis = d3.RealFourier(coords['x'], size=nx, bounds=(0, Lx), dealias=3/2)
 ybasis = d3.RealFourier(coords['y'], size=ny, bounds=(0, Ly), dealias=3/2)
-zbasis = d3.Chebyshev(coords['z'], size=nz, bounds=(0, Lz), dealias=1)
+zbasis = d3.Chebyshev(coords['z'], size=nz, bounds=(-Lz, 0), dealias=1)
 
 # Fields
 p = dist.Field(name='p', bases=(xbasis,ybasis,zbasis))
@@ -67,10 +67,10 @@ problem = d3.IVP([p, u, tau_p, tau_u1, tau_u2], namespace= globals()| locals())
 #problem.namespace.update({'t':problem.time})
 #problem.namespace.update({problem.time: problem.sim_time_field})
 
-alpha = lambda t: (t-t0)/T
-beta = lambda t: (x-x0)/(c*(t-t0))
-delta=2*(y-y0)/wavelength
-gamma= lambda t: z/(chi*c*(t-t0))  
+alpha = lambda t: max(min((t-t0)/T,1),0)
+beta = lambda t: max(min((x-x0)/(c*(t-t0)),1),0)
+delta= max(min(2*(y-y0)/wavelength, 1),-1)
+gamma= lambda t: max(min(z/(chi*c*(t-t0)),0),-1)
 T_alpha= lambda t: mu1*alpha(t)**2*(np.exp(mu3*(1-alpha(t))**2)-1)
 X_beta= lambda t: mu2*beta(t)**2*(1-beta(t))**2*(1+mu4*beta(t)**3)
 Y_delta=(1-delta**2)**2*(1+mu5*delta**2)
@@ -79,7 +79,7 @@ Z_gamma= lambda t: (1-gamma(t)**2)**2*(1+mu6*gamma(t)**2)
 problem.add_equation("trace(grad_u) + tau_p = 0")
 problem.add_equation("dt(u) - 1/Re*div(grad_u) + grad(p) + lift(tau_u2) = -dot(u,grad(u))+A0*ex")
 problem.add_equation("u(z=0) = 0") # change from -1 to -0.5
-problem.add_equation("u(z=Lz) = 0") #change from 1 to 0.5
+problem.add_equation("u(z=-Lz) = 0") #change from 1 to 0.5
 problem.add_equation("integ(p) = 0")
 
 #get the time variable. 
