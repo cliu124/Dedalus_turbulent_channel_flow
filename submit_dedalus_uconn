@@ -21,7 +21,7 @@ mkdir -p "$WORKDIR" && cp -r *.py "$WORKDIR" && cp submit_dedalus_uconn "$WORKDI
 
 conda activate dedalus2
 
-mpiexec -n $SLURM_NTASKS python3 main_Langmuir_reduced_equations_v2.py
+mpiexec -n $SLURM_NTASKS python3 main_breaking_waves_v3.py
 
 cd "$SUBMITDIR" && cp dedalus_output_$SLURM_JOB_ID "$WORKDIR"
 
