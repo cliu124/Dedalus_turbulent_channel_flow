@@ -32,8 +32,8 @@ mu6=2
 t0=-0.0001
 x0=0
 y0=0
-#nx, ny, nz = 100, 100, 96 # larger box. Kim Moin and Moser 
-nx, ny, nz=32, 28, 30
+nx, ny, nz = 128, 100, 96 #grid resolution
+#nx, ny, nz=32, 28, 30
 coords = d3.CartesianCoordinates('x', 'y','z')
 dist = d3.Distributor(coords, dtype=np.float64)
 xbasis = d3.RealFourier(coords['x'], size=nx, bounds=(0, Lx), dealias=3/2)
