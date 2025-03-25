@@ -10,7 +10,6 @@ Lx, Ly, Lz = (4.0, 2.0, 4)
 Re = 8000 # U_b*H/nu
 #Retau = 180 # = u_tau*H/nu
 dtype = np.float64
-stop_sim_time = 600
 timestepper = d3.RK222
 max_timestep = 0.1  # 0.125 to 0.1
 
@@ -21,6 +20,7 @@ wavelength=c*c*2*np.pi/9.8
 chi=0.2
 k_b=0.18
 T=wavelength/c
+#stop_sim_time = 600
 
 mu1=2.1
 mu2=5.1
@@ -31,7 +31,7 @@ mu6=2
 
 t0=-0.0001
 x0=0
-y0=1
+y0=0
 #nx, ny, nz = 100, 100, 96 # larger box. Kim Moin and Moser 
 nx, ny, nz=32, 28, 30
 coords = d3.CartesianCoordinates('x', 'y','z')
@@ -69,7 +69,11 @@ problem = d3.IVP([p, u, tau_p, tau_u1, tau_u2], namespace= globals()| locals())
 
 alpha = lambda t: np.maximum(np.minimum((t-t0)/T,1),0)
 beta = lambda t: np.maximum(np.minimum((x-x0)/(c*(t-t0)),1),0)
-delta= np.maximum(np.minimum(2*(y-y0)/wavelength, 1),-1)
+#delta= np.maximum(np.minimum(2*(y-y0)/wavelength, 1),-1)
+
+#This is for 2D breaking waves, such that Y(delta)=1 and we enforce delta=0 everywhere. Use this minimum function will make sure dimension is consistent
+delta=np.minimum(y,0)
+
 gamma= lambda t: np.maximum(np.minimum(z/(chi*c*(t-t0)),0),-1)
 T_alpha= lambda t: mu1*alpha(t)**2*(np.exp(mu3*(1-alpha(t))**2)-1)
 X_beta= lambda t: mu2*beta(t)**2*(1-beta(t))**2*(1+mu4*beta(t)**3)
@@ -88,7 +92,7 @@ problem.add_equation("integ(p) = 0")
 
 # Build Solver
 dt = 0.0001 # 0.001
-stop_sim_time = 600
+stop_sim_time = 10*T
 fh_mode = 'overwrite'
 solver = problem.build_solver(timestepper)
 solver.stop_sim_time = stop_sim_time
